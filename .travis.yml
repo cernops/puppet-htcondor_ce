@@ -1,0 +1,65 @@
+addons:
+  apt:
+   packages:
+    - libaugeas-dev
+cache:
+  bundler
+bundler_args: --without system_tests
+script: bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation && bundle exec rake metadata'
+matrix:
+  fast_finish: true
+  allow_failures:
+    - rvm: 2.2.2
+  include:
+  - rvm: 1.9.3
+    env: PUPPET_GEM_VERSION="~> 3.4.0"
+  - rvm: 1.9.3
+    env: PUPPET_GEM_VERSION="~> 3.0"
+  - rvm: 1.9.3
+    env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
+  - rvm: 1.9.3
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 2.0.0
+    env: PUPPET_GEM_VERSION="~> 3.0"
+  - rvm: 2.0.0
+    env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
+  - rvm: 2.0.0
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 2.1.5
+    env: PUPPET_GEM_VERSION="~> 3.0"
+  - rvm: 2.1.5
+    env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
+  - rvm: 2.1.5
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 2.2.2
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: default
+    sudo: required
+    dist: trusty
+    services: docker
+    env: BEAKER_set="centos-6-x86_64-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 && bundle exec beaker
+  - rvm: default
+    sudo: required
+    dist: trusty
+    services: docker
+    env: BEAKER_set="centos-7-x86_64-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 && bundle exec beaker
+
+
+notifications:
+  email: false
+deploy:
+  provider: puppetforge
+  user: CERNOps
+  password:
+    secure: "rv9p5Z+1dTza+4TNqq8rz0mp6QU1UO2Dr1ZBNxPTKhmjcTfDT+b8O/+NQ/e3zl16dr1gCVQ1pDmx+3zXEegquP8BXUhozu5cdfe7HbdNlwn9BTJ4nvM6egYIXHiTMw0IWIpplJtKwEy9kc4M3j+L0QDjftS7gBMyUVJu59ZEwI6SdkjmOkOg6KOqRWgWOE8iF01JvA6E+HC9Nlpo5fvJnk/ecKy+K89watI1XViP8QOB46ZOnpXRYDqEAw2LB64cSo7FTHLO6el+n4zv0JMAN1UTPNExW3hSEmFZujompdQTVjRcMvyH/hNyFXsnOE/79COTIDJvm0/Iz9mXZJbkWSbIFJqqjFUnls9fEmBuX2Ol+8l5sPeG+JBUr9dgPGBxFbxvUnAOnbE0Xj3OqGskW9ZBvrm//F5yfUoMUCPV7hl7jJCtqBmmPZgeWo10+XAZauFSh48mc1IiIawxl6JE8B1c7EUY8iZNaJ//AV8lCa+mly7uqp788ZpKHRBnRxYrlVxZSHLtGq8cf83oMrZl9CyZLSUBq8M9NloSKEaVV7FZjEHVICjcvibNQPdLnU/N6KucgJOSj8xtEBuke1uUlMvxP5f+/6tKHgt+4tXfK68jqtYA6pbKP2nrEcDLS0OTe/lC3jlvNUEuWBcyTfXXlQW0xsptxFrJc+bPswFZcUs="
+  on:
+    tags: true
+    all_branches: true
+    rvm: 1.9.3
+    condition: $FUTURE_PARSER = yes
+
+
