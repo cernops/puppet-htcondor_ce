@@ -39,14 +39,14 @@ matrix:
     services: docker
     env: BEAKER_set="centos-6-x86_64-docker"
     bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec beaker
+    script: sudo service docker restart ; sleep 10 && bundle exec rake beaker
   - rvm: default
     sudo: required
     dist: trusty
     services: docker
     env: BEAKER_set="centos-7-x86_64-docker"
     bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec beaker
+    script: sudo service docker restart ; sleep 10 && bundle exec rake beaker
 
 
 notifications:
