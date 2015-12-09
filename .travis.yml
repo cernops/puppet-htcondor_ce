@@ -31,6 +31,8 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
   - rvm: 2.1.5
     env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 2.1.5
+    env: PUPPET_GEM_VERSION="~> 4.0" STRICT_VARIABLES="yes"
   - rvm: 2.2.2
     env: PUPPET_GEM_VERSION="~> 4.0"
   - rvm: default
@@ -39,14 +41,14 @@ matrix:
     services: docker
     env: BEAKER_set="centos-6-x86_64-docker"
     bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec beaker
+    script: sudo service docker restart ; sleep 10 && bundle exec rake beaker
   - rvm: default
     sudo: required
     dist: trusty
     services: docker
     env: BEAKER_set="centos-7-x86_64-docker"
     bundler_args:
-    script: sudo service docker restart ; sleep 10 && bundle exec beaker
+    script: sudo service docker restart ; sleep 10 && bundle exec rake beaker
 
 
 notifications:
