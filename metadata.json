@@ -1,12 +1,12 @@
 {
-  "name": "CERNOps-htcondorce",
+  "name": "CERNOps-htcondorc_e",
   "version": "0.1.0",
   "author": "CERNOps",
   "summary": "Configures HTCondor Computer Element",
   "license": "Apache-2.0",
-  "source": "https://github.com/cernops/puppet-htcondorce",
-  "project_page": "https://github.com/cernops/puppet-htcondorce",
-  "issues_url": "https://github.com/cernops/puppet-htcondorce/issues",
+  "source": "https://github.com/cernops/puppet-htcondor_ce",
+  "project_page": "https://github.com/cernops/puppet-htcondor_ce",
+  "issues_url": "https://github.com/cernops/puppet-htcondor_ce/issues",
   "dependencies": [
     {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
   ]
