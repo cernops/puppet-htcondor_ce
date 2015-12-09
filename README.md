@@ -1,15 +1,15 @@
-[![Puppet Forge](http://img.shields.io/puppetforge/v/CERNOps/htcondorce.svg)](https://forge.puppetlabs.com/CERNOps/htcondorce)
-[![Build Status](https://travis-ci.org/cernops/puppet-htcondorce.svg)](https://travis-ci.org/cernops/puppet-htcondorce)
+[![Puppet Forge](http://img.shields.io/puppetforge/v/CERNOps/htcondor_ce.svg)](https://forge.puppetlabs.com/CERNOps/htcondor_ce)
+[![Build Status](https://travis-ci.org/cernops/puppet-htcondor_ce.svg)](https://travis-ci.org/cernops/puppet-htcondor_ce)
 
-# htcondorce
+# htcondor_ce
 
 #### Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with htcondorce](#setup)
-    * [What htcondorce affects](#what-htcondorce-affects)
+1. [Setup - The basics of getting started with htcondor_ce](#setup)
+    * [What htcondor_ce affects](#what-htcondor_ce-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with htcondorce](#beginning-with-htcondorce)
+    * [Beginning with htcondor_ce](#beginning-with-htcondor_ce)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 1. [Limitations - OS compatibility, etc.](#limitations)
@@ -28,7 +28,7 @@ management, etc.), this is the time to mention it.
 
 ## Setup
 
-### What htcondorce affects **OPTIONAL**
+### What htcondor_ce affects **OPTIONAL**
 
 If it's obvious what your module touches, you can skip this section. For
 example, folks can probably figure out that your mysql_instance module affects
@@ -50,7 +50,7 @@ If your most recent release breaks compatibility or requires particular steps
 for upgrading, you might want to include an additional "Upgrading" section
 here.
 
-### Beginning with htcondorce
+### Beginning with htcondor_ce
 
 The very basic steps needed for a user to get the module up and running. This
 can include setup steps, if necessary, or it can be an example of the most

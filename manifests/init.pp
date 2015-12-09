@@ -1,4 +1,4 @@
-class htcondorce {
+class htcondor_ce {
 
 
 }

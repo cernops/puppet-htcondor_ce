@@ -1,9 +1,9 @@
 require 'spec_helper_acceptance'
 
-describe 'htcondorce' do
+describe 'htcondor_ce' do
     it 'should configure and work with no errors' do
       pp = <<-EOS
-         class{"htcondorce":
+         class{"htcondor_ce":
          }
       EOS
       # Run it two times, it should be stable by then

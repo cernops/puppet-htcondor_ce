@@ -2,4 +2,4 @@ fixtures:
   repositories:
     stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib"
   symlinks:
-   "htcondorce": "#{source_dir}"
+   "htcondor_ce": "#{source_dir}"
