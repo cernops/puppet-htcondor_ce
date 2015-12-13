@@ -6,15 +6,16 @@
 #
 # 
 class htcondor_ce::config (
-  $pool_collector     = $::htcondor_ce::pool_collector,
-  $condor_view_hosts  = $::htcondor_ce::condor_view_hosts,
-  $gsi_regex          = $::htcondor_ce::gsi_regex,
-  $uid_domain         = $::htcondor_ce::uid_domain,
-  $use_static_shadow  = $::htcondor_ce::use_static_shadow,
+  $pool_collector      = $::htcondor_ce::pool_collector,
+  $condor_view_hosts   = $::htcondor_ce::condor_view_hosts,
+  $job_routes_template = $::htcondor_ce::job_routes_template,
+  $gsi_regex           = $::htcondor_ce::gsi_regex,
+  $uid_domain          = $::htcondor_ce::uid_domain,
+  $use_static_shadow   = $::htcondor_ce::use_static_shadow,
 ) inherits htcondor_ce {
 
-  $main_ce_config = '/etc/condor-ce/config.d/60-configured-attributes.conf'
   $site_security  = '/etc/condor-ce/config.d/59-site-security.conf',
+  $main_ce_config = '/etc/condor-ce/config.d/60-configured-attributes.conf'
   $job_routes     = '/etc/condor-ce/config.d/61-job-routes.conf',
   $condor_mapfile = '/etc/condor-ce/condor_mapfile',
   $ce_sysconfig   = '/etc/sysconfig/condor-ce',
