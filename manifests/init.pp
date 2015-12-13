@@ -27,5 +27,9 @@ class htcondor_ce(
 
   class { '::htcondor_ce::config': }
 
-  class { '::htcondor_ce::service': }
+  class { '::htcondor_ce::auth': }
+
+  if $manage_service {
+    class { '::htcondor_ce::service': }
+  }
 }
