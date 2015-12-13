@@ -27,6 +27,10 @@ class htcondor_ce(
 
   class { '::htcondor_ce::config': }
 
+  if $use_static_shadow {
+    class { '::htcondor_ce::shadow': }
+  }
+
   class { '::htcondor_ce::auth': }
 
   if $manage_service {
