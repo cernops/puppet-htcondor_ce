@@ -1,0 +1,23 @@
+#####################################################
+# Example Job Route
+#
+# This is an extraordinarily simple job route.
+# All it does is route local condor and set a
+# simple Accounting Group and default RequestMemory.
+#####################################################
+
+# No custom functions for job router entries; these are causing crashes in 8.3.5.
+# Can remove the eval_set_environment attribute below starting in 8.3.8.
+JOB_ROUTER_ENTRIES = \
+   [ \
+    eval_set_environment = debug(strcat("HOME=/tmp CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, " ", \
+        ifThenElse(orig_environment is undefined, osg_environment, \
+          strcat(osg_environment, " ", orig_environment) \
+        ))); \
+     TargetUniverse = 5; \
+     name = "Local_Condor"; \
+     eval_set_AccountingGroup = strcat("group_u_", x509userproxyvoname, ".", Owner); \
+     delete_SUBMIT_Iwd = true; \
+     set_WantIOProxy = true; \
+     set_default_maxMemory = 3000; \
+   ]
