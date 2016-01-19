@@ -12,7 +12,7 @@ class htcondor_ce::install (
   $use_static_shadow  = $::htcondor_ce::use_static_shadow,
 ) inherits htcondor_ce {
 
-  class {'::htcondor_ce::repos'}
+  class {'::htcondor_ce::repos':}
 
   package { 'globus-rsl':
     ensure => present,
