@@ -14,11 +14,11 @@ class htcondor_ce::config (
   $use_static_shadow   = $::htcondor_ce::use_static_shadow,
 ) inherits htcondor_ce {
 
-  $site_security  = '/etc/condor-ce/config.d/59-site-security.conf',
+  $site_security  = '/etc/condor-ce/config.d/59-site-security.conf'
   $main_ce_config = '/etc/condor-ce/config.d/60-configured-attributes.conf'
-  $job_routes     = '/etc/condor-ce/config.d/61-job-routes.conf',
-  $condor_mapfile = '/etc/condor-ce/condor_mapfile',
-  $ce_sysconfig   = '/etc/sysconfig/condor-ce',
+  $job_routes     = '/etc/condor-ce/config.d/61-job-routes.conf'
+  $condor_mapfile = '/etc/condor-ce/condor_mapfile'
+  $ce_sysconfig   = '/etc/sysconfig/condor-ce'
 
   file { $site_security:
     ensure  => file,
