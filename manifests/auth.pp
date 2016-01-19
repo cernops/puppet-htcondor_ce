@@ -16,7 +16,7 @@ class htcondor_ce::auth (
     fail("This module currently doesn't support backends other than ARGUS.")
   }
   else {
-    class {"::htcondor_ce::auth::${gsi_backend}"}
+    class {"::htcondor_ce::auth::${gsi_backend}":}
   }
 
 }
