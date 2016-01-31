@@ -20,8 +20,12 @@ class htcondor_ce::install (
     ensure => present,
   }
 
+  package { 'empty-ca-certs':
+    ensure => present,
+  }
+
   package { "htcondor-ce-${lrms}":
     ensure  => $ce_version,
-    require => Package['condor', 'blahp', 'globus-rsl'],
+    require => Package['condor', 'blahp', 'globus-rsl', 'empty-ca-certs'],
   }
 }
