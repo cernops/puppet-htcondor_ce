@@ -1,5 +1,5 @@
 # Condor View Hosts routes your collector information to global or site collectors
-CONDOR_VIEW_HOSTS = <%= @condor_view_host.sort.flatten.join(', ') %>
+CONDOR_VIEW_HOSTS = <%= @condor_view_hosts.sort.flatten.join(', ') %>
 
 # Disable problematic shared library
 CLASSAD_USER_LIBS=

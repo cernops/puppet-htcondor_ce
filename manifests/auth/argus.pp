@@ -29,7 +29,7 @@ class htcondor_ce::auth::argus (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('htcondor_ce/gsi-pep-callout.erb'),
+    content => template("${module_name}/gsi-pep-callout.erb"),
     require => Package['argus-gsi-pep-callout'],
   }
 
@@ -38,7 +38,7 @@ class htcondor_ce::auth::argus (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    source  => "puppet:///modules/htcondor_ce/gsi-authz.conf",
+    source  => "puppet:///modules/${module_name}/gsi-authz.conf",
     require => Package['argus-gsi-pep-callout'],
   }
 
