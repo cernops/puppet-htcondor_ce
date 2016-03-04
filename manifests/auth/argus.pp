@@ -7,17 +7,20 @@
 #
 # Parameters:
 #
-# 
-class htcondor_ce::auth::argus (
-  $authz_config = $::htcondor_ce::authz_config,
-) inherits htcondor_ce {
+class htcondor_ce::auth::argus {
+  # general parameters
+  $pep_callout      = '/etc/grid-security/gsi-pep-callout-condor.conf'
+  $gsi_authz        = '/etc/grid-security/gsi-authz.conf'
+  # used in $pep_callout template
+  $argus_server     = $::htcondor_ce::argus_server
+  $argus_port       = $::htcondor_ce::argus_port
+  $argus_resourceid = $::htcondor_ce::argus_resourceid
+  # validate inputs
+  validate_string($argus_server)
+  validate_integer($argus_port)
+  validate_string($argus_resourceid)
 
-  $pep_callout = '/etc/grid-security/gsi-pep-callout-condor.conf'
-  $gsi_authz   = '/etc/grid-security/gsi-authz.conf'
-
-  package { 'argus-pep-api-c':
-    ensure => present,
-  }
+  package { 'argus-pep-api-c': ensure => present, }
 
   package { 'argus-gsi-pep-callout':
     ensure  => present,

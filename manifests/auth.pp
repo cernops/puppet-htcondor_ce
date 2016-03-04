@@ -7,16 +7,12 @@
 #
 # Parameters:
 #
-# 
-class htcondor_ce::auth (
-  $gsi_backend = $::htcondor_ce::gsi_backend,
-) inherits htcondor_ce {
+class htcondor_ce::auth {
+  $gsi_backend = $::htcondor_ce::gsi_backend
 
-  if $gsi_backend != 'argus' {
+  if $gsi_backend == 'argus' {
+    class { "::htcondor_ce::auth::argus": }
+  } else {
     fail("This module currently doesn't support backends other than ARGUS.")
   }
-  else {
-    class {"::htcondor_ce::auth::${gsi_backend}":}
-  }
-
 }
