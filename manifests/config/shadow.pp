@@ -3,19 +3,7 @@
 # This class installs and configures a
 # static shadow to be used for the base condor.
 #
-# Defaults to x86
-#
-# Parameters:
-#
-# 
-class htcondor_ce::shadow (
-  $lrms_version = $::htcondor_ce::lrms_version,
-) inherits htcondor_ce {
-
-  package { 'condor-static-shadow':
-    ensure => "${lrms_version}",
-  }
-
+class htcondor_ce::config::shadow {
   file { '/etc/condor/config.d/41_ce_shadow.conf':
     ensure  => present,
     owner   => 'condor',

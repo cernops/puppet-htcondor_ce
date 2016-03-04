@@ -32,18 +32,13 @@ class htcondor_ce (
   validate_string($pool_collector, $lrms, $lrms_version)
   validate_string($uid_domain, $gsi_regex)
   validate_array($condor_view_hosts)
-  validate_bool($manage_service)
+  validate_bool($manage_service, $use_static_shadow, $install_bdii)
 
   class { '::htcondor_ce::install': }
 
   class { '::htcondor_ce::config': }
 
-  if $use_static_shadow {
-    class { '::htcondor_ce::shadow': }
-  }
-
-  class { '::htcondor_ce::auth':
-  }
+  class { '::htcondor_ce::auth': }
 
   if $manage_service {
     class { '::htcondor_ce::service': }

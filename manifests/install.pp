@@ -11,8 +11,6 @@ class htcondor_ce::install {
   $use_static_shadow = $::htcondor_ce::use_static_shadow
   $install_bdii      = $::htcondor_ce::install_bdii
 
-  validate_bool($install_bdii)
-
   package { ['globus-rsl', 'blahp', 'empty-ca-certs']: ensure => present, }
 
   package { ['htcondor-ce', 'htcondor-ce-client', "htcondor-ce-${lrms}"]:
@@ -23,4 +21,9 @@ class htcondor_ce::install {
   if $install_bdii {
     package { 'htcondor-ce-bdii': ensure => $ce_version, }
   }
+
+  if $use_static_shadow {
+    package { 'condor-static-shadow': ensure => "${lrms_version}", }
+  }
+
 }
