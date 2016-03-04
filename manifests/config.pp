@@ -4,7 +4,6 @@
 #
 # Parameters:
 #
-# 
 class htcondor_ce::config (
   $pool_collector      = $::htcondor_ce::pool_collector,
   $condor_view_hosts   = $::htcondor_ce::condor_view_hosts,
@@ -12,7 +11,8 @@ class htcondor_ce::config (
   $gsi_regex           = $::htcondor_ce::gsi_regex,
   $uid_domain          = $::htcondor_ce::uid_domain,
   $use_static_shadow   = $::htcondor_ce::use_static_shadow,
-) inherits htcondor_ce {
+  ) inherits htcondor_ce {
+  $install_bdii   = $::htcondor_ce::install_bdii
 
   $site_security  = '/etc/condor-ce/config.d/59-site-security.conf'
   $main_ce_config = '/etc/condor-ce/config.d/60-configured-attributes.conf'
@@ -62,10 +62,12 @@ class htcondor_ce::config (
 
   $config_files = [File[$main_ce_config, $site_security, $job_routes, $condor_mapfile]]
 
-  exec {'/usr/bin/condor_ce_reconfig':
-    refreshonly => true,
-  }
+  exec { '/usr/bin/condor_ce_reconfig': refreshonly => true, }
 
   $config_files ~> Exec['/usr/bin/condor_ce_reconfig']
+
+  if $install_bdii {
+    class { '::htcondor_ce::config::bdii': }
+  }
 
 }

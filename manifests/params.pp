@@ -13,4 +13,13 @@ class htcondor_ce::params {
   $argus_server        = 'site-argus.cern.ch'
   $argus_port          = 8154
   $argus_resourceid    = 'http://authz-interop.org/xacml/resource/resource-type/ce'
+
+  # bdii parameters
+  $install_bdii        = true
+  $supported_vos       = hiera_array('htcondor_ce::supported_vos', ['atlas', 'cms', 'alice', 'lhcb', 'dteam'])
+  $goc_site_name       = ''
+  $benchmark_result    = '10.00-HEP-SPEC06'
+  $execution_env_cores = 16
+  $election_type       = 'leader'
+  $election_hosts      = $::fqdn
 }
