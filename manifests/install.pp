@@ -23,7 +23,7 @@ class htcondor_ce::install {
   }
 
   if $use_static_shadow {
-    package { 'condor-static-shadow': ensure => "${lrms_version}", }
+    package { 'condor-static-shadow': ensure => $lrms_version, }
   }
 
 }

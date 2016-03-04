@@ -42,7 +42,7 @@ class htcondor_ce::config {
     owner   => 'condor',
     group   => 'condor',
     mode    => '0644',
-    content => template("${job_routes_template}"),
+    content => template($job_routes_template),
   }
 
   file { $condor_mapfile:
