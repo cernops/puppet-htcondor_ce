@@ -6,7 +6,7 @@ CLASSAD_USER_LIBS=
 
 # Set appropriate place to route.
 JOB_ROUTER_SCHEDD2_NAME = <%= @fqdn %>
-JOB_ROUTER_SCHEDD2_POOL = <%= @pool_collector %>:9618
+JOB_ROUTER_SCHEDD2_POOL = <%= @pool_collector_str -%>
 
 # Cache Argus lookups for 2 hours.
 GSS_ASSIST_GRIDMAP_CACHE_EXPIRATION=7200

@@ -5,7 +5,7 @@
 # Parameters:
 #
 class htcondor_ce (
-  $pool_collector      = undef,
+  $pool_collectors     = $::htcondor_ce::params::pool_collectors,
   $condor_view_hosts   = $::htcondor_ce::params::condor_view_hosts,
   $job_routes_template = $::htcondor_ce::params::job_routes_template,
   $ce_version          = $::htcondor_ce::params::ce_version,
@@ -29,9 +29,9 @@ class htcondor_ce (
   $election_type       = $::htcondor_ce::params::election_type,
   $election_hosts      = $::htcondor_ce::params::election_hosts,
   ) inherits htcondor_ce::params {
-  validate_string($pool_collector, $lrms, $lrms_version)
+  validate_string($lrms, $lrms_version)
   validate_string($uid_domain, $gsi_regex)
-  validate_array($condor_view_hosts)
+  validate_array($condor_view_hosts, $pool_collectors)
   validate_bool($manage_service, $use_static_shadow, $install_bdii)
 
   class { '::htcondor_ce::install': }

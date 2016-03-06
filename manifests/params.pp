@@ -1,5 +1,6 @@
 # Class: htcondor_ce::params
 class htcondor_ce::params {
+  $pool_collectors     = hiera_array('htcondor_ce::pool_collectors', ['cm.cern.ch'])
   $condor_view_hosts   = ['collector1.opensciencegrid.org:9619', 'collector2.opensciencegrid.org:9619']
   $job_routes_template = 'htcondor_ce/job_routes.conf.erb'
   $ce_version          = '1.20-1.el6'

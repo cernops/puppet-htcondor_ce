@@ -18,8 +18,9 @@ class htcondor_ce::config {
   # $site_security
   $gsi_regex           = $::htcondor_ce::gsi_regex
   # $main_ce_config
-  $pool_collector      = $::htcondor_ce::pool_collector
   $condor_view_hosts   = $::htcondor_ce::condor_view_hosts
+  $pool_collectors     = $::htcondor_ce::pool_collectors
+  $pool_collector_str  = join(suffix($pool_collectors, ':9618'), ', ')
 
   file { $site_security:
     ensure  => file,
