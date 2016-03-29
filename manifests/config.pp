@@ -4,36 +4,38 @@
 #
 # Parameters:
 #
-# 
-class htcondor_ce::config (
-  $pool_collector      = $::htcondor_ce::pool_collector,
-  $condor_view_hosts   = $::htcondor_ce::condor_view_hosts,
-  $job_routes_template = $::htcondor_ce::job_routes_template,
-  $gsi_regex           = $::htcondor_ce::gsi_regex,
-  $uid_domain          = $::htcondor_ce::uid_domain,
-  $use_static_shadow   = $::htcondor_ce::use_static_shadow,
-) inherits htcondor_ce {
-
-  $site_security  = '/etc/condor-ce/config.d/59-site-security.conf'
-  $main_ce_config = '/etc/condor-ce/config.d/60-configured-attributes.conf'
-  $job_routes     = '/etc/condor-ce/config.d/61-job-routes.conf'
-  $condor_mapfile = '/etc/condor-ce/condor_mapfile'
-  $ce_sysconfig   = '/etc/sysconfig/condor-ce'
+class htcondor_ce::config {
+  $site_security       = '/etc/condor-ce/config.d/59-site-security.conf'
+  $main_ce_config      = '/etc/condor-ce/config.d/60-configured-attributes.conf'
+  $job_routes          = '/etc/condor-ce/config.d/61-job-routes.conf'
+  $condor_mapfile      = '/etc/condor-ce/condor_mapfile'
+  $ce_sysconfig        = '/etc/sysconfig/condor-ce'
+  # general parameters used in manifest or more than one template
+  $install_bdii        = $::htcondor_ce::install_bdii
+  $job_routes_template = $::htcondor_ce::job_routes_template
+  $uid_domain          = $::htcondor_ce::uid_domain
+  $use_static_shadow   = $::htcondor_ce::use_static_shadow
+  # $site_security
+  $gsi_regex           = $::htcondor_ce::gsi_regex
+  # $main_ce_config
+  $condor_view_hosts   = $::htcondor_ce::condor_view_hosts
+  $pool_collectors     = $::htcondor_ce::pool_collectors
+  $pool_collector_str  = join(suffix($pool_collectors, ':9618'), ', ')
 
   file { $site_security:
     ensure  => file,
     owner   => 'condor',
     group   => 'condor',
     mode    => '0644',
-    content => template('htcondor_ce/ce-site-security.conf.erb'),
+    content => template("${module_name}//ce-site-security.conf.erb"),
   }
 
-  file { $main_ce_conf:
+  file { $main_ce_config:
     ensure  => file,
     owner   => 'condor',
     group   => 'condor',
     mode    => '0644',
-    content => template('htcondor_ce/ce-configured-attributes.conf.erb'),
+    content => template("${module_name}/60-configured-attributes.conf.erb"),
   }
 
   file { $job_routes:
@@ -41,7 +43,7 @@ class htcondor_ce::config (
     owner   => 'condor',
     group   => 'condor',
     mode    => '0644',
-    content => template("${job_routes_template}"),
+    content => template($job_routes_template),
   }
 
   file { $condor_mapfile:
@@ -49,23 +51,29 @@ class htcondor_ce::config (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('htcondor_ce/condor_mapfile.erb'),
+    content => template("${module_name}//condor_mapfile.erb"),
   }
 
-  file { $ce_sysconf:
+  file { $ce_sysconfig:
     ensure => file,
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
-    source => "puppet:///modules/htcondor_ce/syconfig-condor-ce",
+    source => "puppet:///modules/${module_name}/sysconfig-condor-ce",
   }
 
-  $config_files = [File[$main_ce_conf, $site_security, $job_routes, $condor_mapfile]]
+  $config_files = [File[$main_ce_config, $site_security, $job_routes, $condor_mapfile]]
 
-  exec {'/usr/bin/condor_ce_reconfig':
-    refreshonly => true,
-  }
+  exec { '/usr/bin/condor_ce_reconfig': refreshonly => true, }
 
   $config_files ~> Exec['/usr/bin/condor_ce_reconfig']
+
+  if $install_bdii {
+    class { '::htcondor_ce::config::bdii': }
+  }
+
+  if $use_static_shadow {
+    class { '::htcondor_ce::config::shadow': }
+  }
 
 }

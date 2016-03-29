@@ -4,10 +4,9 @@
 #
 # Parameters:
 #
-# 
-class htcondor_ce(
-  $pool_collector      = undef,
-  $condor_views_hosts  = $::htcondor_ce::params::condor_view_hosts,
+class htcondor_ce (
+  $pool_collectors     = $::htcondor_ce::params::pool_collectors,
+  $condor_view_hosts   = $::htcondor_ce::params::condor_view_hosts,
   $job_routes_template = $::htcondor_ce::params::job_routes_template,
   $ce_version          = $::htcondor_ce::params::ce_version,
   $lrms                = $::htcondor_ce::params::lrms,
@@ -17,23 +16,32 @@ class htcondor_ce(
   $gsi_backend         = $::htcondor_ce::params::gsi_backend,
   $use_static_shadow   = $::htcondor_ce::params::use_static_shadow,
   $manage_service      = $::htcondor_ce::params::manage_service,
-){
-
-  validate_string($pool_collector, $lrms, $lrms_version)
+  # for argus
+  $argus_server        = $::htcondor_ce::params::argus_server,
+  $argus_port          = $::htcondor_ce::params::argus_port,
+  $argus_resourceid    = $::htcondor_ce::params::argus_resourceid,
+  # for bdii
+  $install_bdii        = $::htcondor_ce::params::install_bdii,
+  $supported_vos       = $::htcondor_ce::params::supported_vos,
+  $goc_site_name       = $::htcondor_ce::params::goc_site_name,
+  $benchmark_result    = $::htcondor_ce::params::benchmark_result,
+  $execution_env_cores = $::htcondor_ce::params::execution_env_cores,
+  $election_type       = $::htcondor_ce::params::election_type,
+  $election_hosts      = $::htcondor_ce::params::election_hosts,
+  ) inherits htcondor_ce::params {
+  validate_string($lrms, $lrms_version)
   validate_string($uid_domain, $gsi_regex)
-  validate_array($condor_view_hosts)
+  validate_array($condor_view_hosts, $pool_collectors)
+  validate_bool($manage_service, $use_static_shadow, $install_bdii)
 
   class { '::htcondor_ce::install': }
 
   class { '::htcondor_ce::config': }
-
-  if $use_static_shadow {
-    class { '::htcondor_ce::shadow': }
-  }
 
   class { '::htcondor_ce::auth': }
 
   if $manage_service {
     class { '::htcondor_ce::service': }
   }
+
 }
