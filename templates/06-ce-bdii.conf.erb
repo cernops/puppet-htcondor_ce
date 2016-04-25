@@ -1,0 +1,20 @@
+##############################################################################
+#
+# HTCondor-CE BDII/GLUE Publication configuration file.
+#
+##############################################################################
+
+# For multi-CE sites, only one CE publishes certain values.
+<% if @election_type == 'zookeeper' %>
+HTCONDORCE_BDII_ELECTION = ZOOKEEPER
+HTCONDORCE_BDII_ZKHOSTS  = <%= @election_hosts %>
+<% else %>
+HTCONDORCE_BDII_ELECTION = LEADER
+HTCONDORCE_BDII_LEADER   = <%= @election_hosts %>
+<% end %>
+
+# BDII Static Info and VOs
+HTCONDORCE_VONames = <%= @supported_vos.sort.join(', ') %>
+HTCONDORCE_SiteName = <%= @goc_site_name %>
+HTCONDORCE_HEPSPEC_INFO = <%= @benchmark_result %>
+HTCONDORCE_CORES = <%= @execution_env_cores %> # cores per node
