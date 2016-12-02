@@ -1,5 +1,5 @@
 # Condor View Hosts routes your collector information to global or site collectors
-CONDOR_VIEW_HOSTS = <%= @condor_view_hosts.sort.flatten.join(', ') %>
+CONDOR_VIEW_HOST = <%= @condor_view_hosts.sort.flatten.join(', ') %>
 
 # Disable problematic shared library
 CLASSAD_USER_LIBS=
@@ -7,6 +7,9 @@ CLASSAD_USER_LIBS=
 # Set appropriate place to route.
 JOB_ROUTER_SCHEDD2_NAME = <%= @fqdn %>
 JOB_ROUTER_SCHEDD2_POOL = <%= @pool_collector_str -%>
+
+# No reason to hide jobs from view on CE
+CONDOR_Q_ONLY_MY_JOBS = False
 
 # Cache Argus lookups for 2 hours.
 GSS_ASSIST_GRIDMAP_CACHE_EXPIRATION=7200
