@@ -7,7 +7,7 @@
 # For multi-CE sites, only one CE publishes certain values.
 <% if @election_type == 'zookeeper' %>
 HTCONDORCE_BDII_ELECTION = ZOOKEEPER
-HTCONDORCE_BDII_ZKHOSTS  = <%= @election_hosts %>
+HTCONDORCE_BDII_ZKHOSTS  = <%= @election_hosts.sort.join(',')  %>
 <% else %>
 HTCONDORCE_BDII_ELECTION = LEADER
 HTCONDORCE_BDII_LEADER   = <%= @election_hosts %>

@@ -27,7 +27,7 @@ class htcondor_ce::config {
     owner   => 'condor',
     group   => 'condor',
     mode    => '0644',
-    content => template("${module_name}//ce-site-security.conf.erb"),
+    content => template("${module_name}/ce-site-security.conf.erb"),
   }
 
   file { $main_ce_config:
@@ -51,7 +51,7 @@ class htcondor_ce::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template("${module_name}//condor_mapfile.erb"),
+    content => template("${module_name}/condor_mapfile.erb"),
   }
 
   file { $ce_sysconfig:
@@ -62,7 +62,7 @@ class htcondor_ce::config {
     source => "puppet:///modules/${module_name}/sysconfig-condor-ce",
   }
 
-  $config_files = [File[$main_ce_config, $site_security, $job_routes, $condor_mapfile]]
+  $config_files = [File[$main_ce_config], File[$site_security], File[$job_routes], File[$condor_mapfile]]
 
   exec { '/usr/bin/condor_ce_reconfig': refreshonly => true, }
 
