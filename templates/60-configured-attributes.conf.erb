@@ -1,5 +1,52 @@
-# Condor View Hosts routes your collector information to global or site collectors
-CONDOR_VIEW_HOSTS = <%= @condor_view_hosts.sort.flatten.join(', ') %>
+CONDOR_VIEW_HOST = <%= @condor_view_host.sort.flatten.join(', ') %>
+
+# No custom functions for job router entries; these are causing crashes in 8.3.5.
+# Can remove the eval_set_environment attribute below starting in 8.3.8.
+JOB_ROUTER_ENTRIES = \
+   [ \
+    eval_set_environment = debug(strcat("HOME=/tmp CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, " ", \
+        ifThenElse(orig_environment is undefined, osg_environment, \
+          strcat(osg_environment, " ", orig_environment) \
+        ))); \
+     MaxJobs = 12000; \  
+     MaxIdleJobs = 4000; \
+     TargetUniverse = 5; \
+     name = "Local_Condor"; \
+     set_AcctSubGroup = ifThenElse(regexp("prd",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"PRD"),ifThenElse(regexp("pil",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"PLT"),ifThenElse(regexp("plt",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"PLT"),ifThenElse(regexp("sgm",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"SGM"),ifThenElse(regexp("ops",Owner),"grid_OPS",strcat("grid_", toUpper(x509UserProxyVOName))))))); \
+     set_CERNAcctGroup = ifThenElse(regexp("ops",Owner),"DTEAM",toUpper(x509UserProxyVOName)); \
+     eval_set_AccountingGroup = strcat("group_u_", CERNAcctGroup, ".", AcctSubGroup, ".", Owner); \
+     eval_set_AcctGroup = strcat("group_u_", CERNAcctGroup, ".", AcctSubGroup); \
+     delete_SUBMIT_Iwd = true; \
+     set_WantIOProxy = true; \
+     set_default_maxMemory = 2730; \
+     set_HEPSPEC = "$$(HEPSPEC:80)"; \
+     set_DataCentre = "$$(DATACENTRE:meyrin)"; \
+     set_HostLogicalCores = "$$(TotalCpus:8)"; \
+     delete_TimerRemove = 1850288036; \
+     Requirements = (TARGET.WantExternalCloud =!= True) && (TARGET.queue =!= "WantExternalCloud") && (TARGET.queue =!= "externalcloud"); \
+   ] \
+   [ \
+    eval_set_environment = debug(strcat("HOME=/tmp CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, " ", \
+        ifThenElse(orig_environment is undefined, osg_environment, \
+          strcat(osg_environment, " ", orig_environment) \
+        ))); \
+     TargetUniverse = 5; \
+     name = "External_Cloud"; \
+     set_AcctSubGroup = ifThenElse(regexp("prd",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"PRD"),ifThenElse(regexp("pil",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"PLT"),ifThenElse(regexp("plt",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"PLT"),ifThenElse(regexp("sgm",Owner),strcat("grid_", toUpper(x509UserProxyVOName),"SGM"),ifThenElse(regexp("ops",Owner),"grid_OPS",strcat("grid_", toUpper(x509UserProxyVOName))))))); \
+     set_CERNAcctGroup = ifThenElse(regexp("ops",Owner),"DTEAM",toUpper(x509UserProxyVOName)); \
+     eval_set_AccountingGroup = strcat("group_u_", CERNAcctGroup, ".", AcctSubGroup, ".", Owner); \
+     eval_set_AcctGroup = strcat("group_u_", CERNAcctGroup, ".", AcctSubGroup); \
+     delete_SUBMIT_Iwd = true; \
+     set_WantIOProxy = true; \
+     set_default_maxMemory = 2730; \
+     set_HEPSPEC = "$$(HEPSPEC:80)"; \
+     set_DataCentre = "$$(DATACENTRE:softlayer)"; \
+     set_HostLogicalCores = "$$(TotalCpus:8)"; \
+     delete_TimerRemove = 1850288036; \
+     set_Requirements = (XBatch =?= True); \
+     set_WantExternalCloud = True; \
+     Requirements = (TARGET.WantExternalCloud =?= True) || (TARGET.queue =?= "WantExternalCloud") || (TARGET.queue =?= "externalcloud"); \
+   ]
 
 # Disable problematic shared library
 CLASSAD_USER_LIBS=
@@ -12,4 +59,11 @@ JOB_ROUTER_SCHEDD2_POOL = <%= @pool_collector_str -%>
 GSS_ASSIST_GRIDMAP_CACHE_EXPIRATION=7200
 
 SCHEDD_COLLECT_STATS_BY_VO = x509userproxyvoname
+#SCHEDD_COLLECT_STATS_BY_DATACENTRE = 
 STATISTICS_TO_PUBLISH = SCHEDD:2
+
+HTCONDORCE_VONames = atlas, cms, lhcb, dteam, alice, ilc, vo.compass.cern.ch
+HTCONDORCE_SiteName = CERN-PROD
+HTCONDORCE_HEPSPEC_INFO = 8.97-HEP-SPEC06
+HTCONDORCE_CORES = 16
+

@@ -1,0 +1,12 @@
+## Allow local condor daemons to be recognised as friendly
+FRIENDLY_DAEMONS = $(FRIENDLY_DAEMONS), $(FULL_HOSTNAME)@cern.ch/$(FULL_HOSTNAME), *@cern.ch
+UID_DOMAIN = cern.ch
+## Recognise users from your site
+USERS = $(USERS), *@cern.ch
+## Allow local daemons to write to the CE schedd
+SCHEDD.ALLOW_WRITE = $(SCHEDD.ALLOW_WRITE), $(FULL_HOSTNAME)@cern.ch/$(FULL_HOSTNAME), *@cern.ch
+COLLECTOR.ALLOW_ADVERTISE_STARTD =  $(COLLECTOR.ALLOW_ADVERTISE_STARTD), *@cern.ch
+## Local daemons need to be able to negotiate
+SCHEDD.ALLOW_NEGOTIATOR = $(SCHEDD.ALLOW_NEGOTIATOR), $(FULL_HOSTNAME)@cern.ch/$(FULL_HOSTNAME), *@cern.ch
+## Allow administrator access to CE daemons
+ALLOW_ADMINISTRATOR = $(ALLOW_ADMINISTRATOR), $(FULL_HOSTNAME)@cern.ch/$(FULL_HOSTNAME)
