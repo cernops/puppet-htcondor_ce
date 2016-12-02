@@ -1,79 +1,77 @@
-# Class: htcondor_ce::config
-#
-# This class configures a HTCondor Computing Element
-#
-# Parameters:
-#
-class htcondor_ce::config {
-  $site_security       = '/etc/condor-ce/config.d/59-site-security.conf'
-  $main_ce_config      = '/etc/condor-ce/config.d/60-configured-attributes.conf'
-  $job_routes          = '/etc/condor-ce/config.d/61-job-routes.conf'
-  $condor_mapfile      = '/etc/condor-ce/condor_mapfile'
-  $ce_sysconfig        = '/etc/sysconfig/condor-ce'
-  # general parameters used in manifest or more than one template
-  $install_bdii        = $::htcondor_ce::install_bdii
-  $job_routes_template = $::htcondor_ce::job_routes_template
-  $uid_domain          = $::htcondor_ce::uid_domain
-  $use_static_shadow   = $::htcondor_ce::use_static_shadow
-  # $site_security
-  $gsi_regex           = $::htcondor_ce::gsi_regex
-  # $main_ce_config
-  $condor_view_hosts   = $::htcondor_ce::condor_view_hosts
-  $pool_collectors     = $::htcondor_ce::pool_collectors
-  $pool_collector_str  = join(suffix($pool_collectors, ':9618'), ', ')
+class htcondor_ce::config (
+  $job_router_schedd2_pool = ['tweetybird01.cern.ch','condorcm1.cern.ch'],
+  $condor_view_host        = ['cecollector1.cern.ch:9619','collector1.opensciencegrid.org:9619', 'collector2.opensciencegrid.org:9619'],
+  $worker_nodes            = [],
+  $computing_elements      = [],
+  $schedds                 = [],
+  $managers                = [],
+  $gsi_dn_prefix           = "/DC=ch/DC=cern/OU=computers/CN=",
+  $gsi_dn_suffix           = ".*",
+  $uid_domain              = 'cern.ch',
+)
+{
+  $main_ce_conf   = '/etc/condor-ce/config.d/60-configured-attributes.conf'
+  $site_ce_sec    = '/etc/condor-ce/config.d/59-site-security.conf'
+  $condor_mapfile = '/etc/condor-ce/condor_mapfile'
+  $pep_callout    = '/etc/grid-security/gsi-pep-callout-condor.conf'
+  $gsi_authz      = '/etc/grid-security/gsi-authz.conf'
+  $ce_sysconf     = '/etc/sysconfig/condor-ce'
 
-  file { $site_security:
+  $pool_collector_str  = join(suffix($job_router_schedd2_pool, ':9618'), ', ')
+
+  file { $main_ce_conf:
     ensure  => file,
-    owner   => 'condor',
-    group   => 'condor',
+    owner   => condor,
+    group   => condor,
     mode    => '0644',
-    content => template("${module_name}//ce-site-security.conf.erb"),
+    content => template('htcondor_ce/60-configured-attributes.conf.erb'),
   }
 
-  file { $main_ce_config:
+  file{ $site_ce_sec:
     ensure  => file,
-    owner   => 'condor',
-    group   => 'condor',
+    owner   => condor,
+    group   => condor,
     mode    => '0644',
-    content => template("${module_name}/60-configured-attributes.conf.erb"),
-  }
-
-  file { $job_routes:
-    ensure  => file,
-    owner   => 'condor',
-    group   => 'condor',
-    mode    => '0644',
-    content => template($job_routes_template),
+    content => template('htcondor_ce/59-site-security.conf.erb'),
   }
 
   file { $condor_mapfile:
     ensure  => file,
-    owner   => 'root',
-    group   => 'root',
+    owner   => root,
+    group   => root,
     mode    => '0644',
-    content => template("${module_name}//condor_mapfile.erb"),
+    content => template('htcondor_ce/condor_mapfile.erb'),
   }
 
-  file { $ce_sysconfig:
+  file { $pep_callout:
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    content => template('htcondor_ce/gsi-pep-callout.erb'),
+  }
+
+  file { $gsi_authz:
     ensure => file,
-    owner  => 'root',
-    group  => 'root',
+    owner  => root,
+    group  => root,
     mode   => '0644',
-    source => "puppet:///modules/${module_name}/sysconfig-condor-ce",
+    source => "puppet:///modules/htcondor_ce/gsi-authz.conf",
   }
 
-  $config_files = [File[$main_ce_config, $site_security, $job_routes, $condor_mapfile]]
+  file { $ce_sysconf:
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => "puppet:///modules/htcondor_ce/syconfig-condor-ce",
+  }
 
-  exec { '/usr/bin/condor_ce_reconfig': refreshonly => true, }
+  $config_files = [File[$main_ce_conf],File[$pep_callout],File[$gsi_authz],File[$ce_sysconf]]
+
+  exec {'/usr/bin/condor_ce_reconfig':
+    refreshonly => true,
+  }
 
   $config_files ~> Exec['/usr/bin/condor_ce_reconfig']
-
-  if $install_bdii {
-    class { '::htcondor_ce::config::bdii': }
-  }
-
-  if $use_static_shadow {
-    class { '::htcondor_ce::config::shadow': }
-  }
-
 }

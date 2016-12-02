@@ -1,47 +1,48 @@
 # Class: htcondor_ce
+# 
+# This class manages HTCondor-CE
+# == Parameters:
 #
-# This class installs and configures a HTCondor Computing Element
+# [*job_router_schedd2_pool*]
+# Defines the main collector for your pool.
+# Defaults: 'condorcm1.cern.ch'
 #
-# Parameters:
+# [*condor_view_host*]
+# Comma separated list of other HTCondor-CEs in the pool and their collector ports.
+# e.g. ce503.cern.ch:9619, ce504.cern.ch:9619
+# Default: []
 #
+# [*condor_ce_version*]
+# Provide a version number for package installation, so we don't receive any unexpected
+# upgrade surprises.
+# Default: '1.13-1.osgup.el6'
+
 class htcondor_ce (
-  $pool_collectors     = $::htcondor_ce::params::pool_collectors,
-  $condor_view_hosts   = $::htcondor_ce::params::condor_view_hosts,
-  $job_routes_template = $::htcondor_ce::params::job_routes_template,
-  $ce_version          = $::htcondor_ce::params::ce_version,
-  $lrms                = $::htcondor_ce::params::lrms,
-  $lrms_version        = $::htcondor_ce::params::lrms_version,
-  $uid_domain          = $::htcondor_ce::params::uid_domain,
-  $gsi_regex           = $::htcondor_ce::params::gsi_regex,
-  $gsi_backend         = $::htcondor_ce::params::gsi_backend,
-  $use_static_shadow   = $::htcondor_ce::params::use_static_shadow,
-  $manage_service      = $::htcondor_ce::params::manage_service,
-  # for argus
-  $argus_server        = $::htcondor_ce::params::argus_server,
-  $argus_port          = $::htcondor_ce::params::argus_port,
-  $argus_resourceid    = $::htcondor_ce::params::argus_resourceid,
-  # for bdii
-  $install_bdii        = $::htcondor_ce::params::install_bdii,
-  $supported_vos       = $::htcondor_ce::params::supported_vos,
-  $goc_site_name       = $::htcondor_ce::params::goc_site_name,
-  $benchmark_result    = $::htcondor_ce::params::benchmark_result,
-  $execution_env_cores = $::htcondor_ce::params::execution_env_cores,
-  $election_type       = $::htcondor_ce::params::election_type,
-  $election_hosts      = $::htcondor_ce::params::election_hosts,
-  ) inherits htcondor_ce::params {
-  validate_string($lrms, $lrms_version)
-  validate_string($uid_domain, $gsi_regex)
-  validate_array($condor_view_hosts, $pool_collectors)
-  validate_bool($manage_service, $use_static_shadow, $install_bdii)
-
-  class { '::htcondor_ce::install': }
-
-  class { '::htcondor_ce::config': }
-
-  class { '::htcondor_ce::auth': }
-
-  if $manage_service {
-    class { '::htcondor_ce::service': }
+  $job_router_schedd2_pool = 'condorcm1.cern.ch',
+  $condor_view_host        = [],
+  $condor_ce_version       = '1.13-1.el6',
+  $condor_version          = '8.3.5-315103.el6',
+  $lrms                    = 'condor',
+  $worker_nodes            = [],
+  $computing_elements      = [],
+  $schedds                 = [],
+  $managers                = [],
+  $gsi_dn_prefix           = "/DC=ch/DC=cern/OU=computers/CN=",
+  $gsi_dn_suffix           = ".*",
+  $uid_domain              = 'cern.ch',
+)
+{
+  class {'htcondor_ce::install':
+    condor_ce_version => $condor_ce_version,
+    condor_version    => $condor_version,
   }
 
+  class {'htcondor_ce::config':
+    worker_nodes       => $worker_nodes,
+    computing_elements => $computing_elements,
+    schedds            => $schedds,
+    managers           => $managers,
+  }
+
+  Class['htcondor_ce::install'] -> Class['htcondor_ce::config']
 }
