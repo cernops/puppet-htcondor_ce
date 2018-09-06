@@ -1,0 +1,27 @@
+dn: GLUE2ShareID=<%= @service_id %>_<%= @share_id %>,GLUE2ServiceID=<%= @service_id %>,GLUE2GroupID=resource,o=glue
+objectClass: GLUE2Entity
+objectClass: GLUE2Share
+objectClass: GLUE2ComputingShare
+GLUE2ShareID: <%= @service_id %>_<%= @share_id %>
+GLUE2ComputingShareMaxCPUTime: 10080
+GLUE2ComputingShareMinCPUTime: 0
+GLUE2ComputingShareMaxTotalCPUTime: 10080
+GLUE2ComputingShareDefaultCPUTime: 10080
+GLUE2ComputingShareMaxWallTime: 30240
+GLUE2ComputingShareMinWallTime: 0
+GLUE2ComputingShareMaxMultiSlotWallTime: 30240
+GLUE2ComputingShareDefaultWallTime: 30240
+GLUE2ComputingShareMaxMainMemory: 3906
+GLUE2ComputingShareMaxVirtualMemory: 17916
+GLUE2ComputingShareGuaranteedMainMemory: 0
+GLUE2ComputingShareGuaranteedVirtualMemory: 0
+GLUE2ComputingShareMaxTotalJobs: 30000
+GLUE2ComputingShareMaxRunningJobs: 10000
+GLUE2ComputingShareMaxUserRunningJobs: 10000
+GLUE2ComputingShareMaxWaitingJobs: 349952
+GLUE2ComputingShareMaxSlotsPerJob: 8
+GLUE2ComputingShareServingState: production
+GLUE2ComputingShareComputingServiceForeignKey: <%= @service_id %>
+GLUE2ComputingShareExecutionEnvironmentForeignKey: <%= @service_id %>_standard
+GLUE2ShareServiceForeignKey: <%= @service_id %>
+GLUE2ShareResourceForeignKey: <%= @service_id %>_standard

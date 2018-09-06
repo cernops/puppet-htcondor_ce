@@ -1,0 +1,17 @@
+dn: GLUE2EndpointID=<%= @endpoint_host %>_HTCondorCE,GLUE2ServiceID=<%= @service_id %>,GLUE2GroupID=resource,o=glue
+objectClass: GLUE2Entity
+objectClass: GLUE2Endpoint
+objectClass: GLUE2ComputingEndpoint
+GLUE2EndpointID: <%= @endpoint_host %>_HTCondorCE
+GLUE2EndpointCapability: executionmanagement.jobexecution
+GLUE2EndpointInterfaceName: org.opensciencegrid.htcondorce
+GLUE2EndpointImplementor: HTCondor
+GLUE2EndpointImplementationName: HTCondor
+GLUE2EndpointURL: condor://<%= @endpoint_host %>:9619
+GLUE2EndpointQualityLevel: production
+GLUE2EndpointServingState: production
+GLUE2EndpointHealthState: Unknown
+GLUE2EndpointIssuerCA: CN=CERN Grid Certification Authority,DC=cern,DC=ch
+GLUE2EndpointDowntimeInfo: See the GOC DB for downtimes: https://goc.egi.eu/
+GLUE2EndpointServiceForeignKey: <%= @service_id %>
+GLUE2ComputingEndpointComputingServiceForeignKey: <%= @service_id %>

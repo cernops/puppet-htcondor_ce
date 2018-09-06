@@ -1,0 +1,17 @@
+dn: GLUE2ResourceID=<%= @service_id %>_standard,GLUE2ServiceID=<%= @service_id %>,GLUE2GroupID=resource,o=glue
+objectClass: GLUE2Entity
+objectClass: GLUE2Resource
+objectClass: GLUE2ExecutionEnvironment
+GLUE2ResourceID: <%= @service_id %>_standard
+GLUE2ExecutionEnvironmentMainMemorySize: 2000
+GLUE2ExecutionEnvironmentVirtualMemorySize: 2048
+GLUE2ExecutionEnvironmentOSFamily: linux
+GLUE2ExecutionEnvironmentCPUMultiplicity: singlecpu-multicore
+GLUE2ExecutionEnvironmentPlatform: amd64
+GLUE2ExecutionEnvironmentPhysicalCPUs: 8
+GLUE2ExecutionEnvironmentLogicalCPUs: 8
+GLUE2ExecutionEnvironmentConnectivityIn: TRUE
+GLUE2ExecutionEnvironmentConnectivityOut: TRUE
+GLUE2ResourceManagerForeignKey:  <%= @service_id %>_Manager
+GLUE2ExecutionEnvironmentComputingManagerForeignKey:  <%= @service_id %>_Manager
+

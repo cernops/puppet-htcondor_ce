@@ -1,0 +1,9 @@
+dn: GLUE2ManagerID=<%= @service_id %>_Manager,GLUE2ServiceID=<%= @service_id %>,GLUE2GroupID=resource,o=glue
+objectClass: GLUE2Entity
+objectClass: GLUE2Manager
+objectClass: GLUE2ComputingManager
+GLUE2ManagerID: <%= @service_id %>_Manager
+GLUE2ManagerProductName: HTCondor
+GLUE2ManagerServiceForeignKey: <%= @service_id %>
+GLUE2ComputingManagerComputingServiceForeignKey: <%= @service_id %>t
+

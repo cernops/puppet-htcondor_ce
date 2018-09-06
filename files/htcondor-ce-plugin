@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+import re
+import os
+import sys
+import datetime
+import htcondor
+import collections
+
+def main():
+    
+    # Get central_manager hostname
+    central_manager = htcondor.param.get('CENTRAL_MANAGER')
+    if not central_manager:
+        sys.stderr.write("Error: CENTRAL_MANAGER not set\n")
+        sys.exit(1)
+    
+    # Query collector for number of CPUs and Collector add
+    coll = htcondor.Collector(central_manager)
+    total_cores = 0
+    for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Cpus']):
+        if ad.get('Cpus'):
+            total_cores += ad['Cpus']
+    coll_ad = coll.locate(htcondor.DaemonTypes.Collector)
+
+    # This is the bind DN for all entries
+    bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
+
+    # Print the LDAP Add entry for the GLUE2 Manager
+    print "dn: GLUE2ManagerID=%s_Manager,%s" %(central_manager, bind_dn)
+    print "changetype: modify"
+    print "add: GLUE2ManagerProductVersion"
+    print "GLUE2ManagerProductVersion: %s" %(coll_ad['CondorVersion'].split()[1])
+    print "-"
+    print "add: GLUE2ComputingManagerTotalPhysicalCPUs"
+    print "GLUE2ComputingManagerTotalPhysicalCPUs: %s" %(total_cores)
+    print "-"
+    print "add: GLUE2ComputingManagerTotalLogicalCPUs"
+    print "GLUE2ComputingManagerTotalLogicalCPUs: %s" %(total_cores)
+    print ""
+
+    # Print the LDAP Add entry for the GLUE2 ExecutionEnvironement
+    print "dn: GLUE2ResourceID=%s_standard,%s" %(central_manager, bind_dn)
+    print "changetype: modify"
+    print "add: GLUE2ExecutionEnvironmentTotalInstances"
+    print "GLUE2ExecutionEnvironmentTotalInstances: %s" %(coll_ad['HostsUnclaimed'])
+    print ""
+
+    # Get the ads for the CEs, check their health and group the jobs states
+    idle_vo_jobs = collections.defaultdict(int)
+    running_vo_jobs = collections.defaultdict(int)
+    total_vo_jobs = collections.defaultdict(int)
+    schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
+    for schedd_ad in schedd_ads:
+        if not schedd_ad['AuthenticatedIdentity'] == 'computing-element@cern.ch':
+            continue
+        try:
+            if htcondor.SecMan().ping(schedd_ad, "READ")['AuthorizationSucceeded']:
+                status = 'ok'
+            else:
+                status = 'warning'
+            status_info = 'Authorization ping successful'
+        except Exception, e:
+            status = 'critial'
+            status_info = 'Authorization ping failed'
+
+        schedd = htcondor.Schedd(schedd_ad)
+        try:
+            query = schedd.xquery("x509userproxyvoname isnt undefined", ["JobStatus", "x509userproxyvoname"])
+        except RuntimeError, e:
+            continue
+        for job in query:
+            if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
+                continue
+            total_vo_jobs[job['x509userproxyvoname']] += 1
+            if job['JobStatus'] == 1:
+                idle_vo_jobs[job['x509userproxyvoname']] += 1
+            elif job['JobStatus'] == 2:
+                running_vo_jobs[job['x509userproxyvoname']] += 1
+
+        # Print the LDAP Add entry for the GLUE2 Endpoint
+        print "dn: GLUE2EndpointID=%s_HTCondorCE,%s" %(schedd_ad['Name'], bind_dn)
+        print "changetype: modify"
+        print "add: GLUE2EndpointImplementationVersion"
+        print "GLUE2EndpointImplementationVersion: %s" %(schedd_ad['CondorVersion'].split()[1])
+        print "-"
+        print "replace: GLUE2EndpointHealthState"
+        print "GLUE2EndpointHealthState: %s" %(status)
+        print "-"
+        print "add: GLUE2EndpointHealthStateInfo"
+        print "GLUE2EndpointHealthStateInfo: %s" %(status_info)
+
+        print "-"
+        print "add: GLUE2EndpointStartTime"
+        print "GLUE2EndpointStartTime: %s" %(datetime.datetime.fromtimestamp(int(schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ'))
+        print ""
+
+
+    vonames = set()
+    vonames.update(idle_vo_jobs.keys())
+    vonames.update(running_vo_jobs.keys())
+    vonames.update([i.strip() for i in re.split('\s*,?\s*', htcondor.param.get('HTCONDORCE_VONAMES', '')) if i])
+    
+    # Print the LDAP Add entry for the GLUE2 Share
+    for vo in vonames:
+        print "dn: GLUE2ShareID=%s_%s,%s" %(central_manager, vo, bind_dn)
+        print "changetype: modify"
+        print "add: GLUE2ComputingShareTotalJobs"
+        print "GLUE2ComputingShareTotalJobs: %s" %(total_vo_jobs.get(vo, 0))
+        print "-"
+        print "add: GLUE2ComputingShareWaitingJobs"
+        print "GLUE2ComputingShareWaitingJobs: %s" %(idle_vo_jobs.get(vo, 0))
+        print "-"
+        print "add: GLUE2ComputingShareRunningJobs"
+        print "GLUE2ComputingShareRunningJobs: %s" %(running_vo_jobs.get(vo, 0))
+        print ""
+
+if __name__ == '__main__':
+    main()
+

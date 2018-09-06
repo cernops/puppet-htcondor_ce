@@ -1,0 +1,11 @@
+dn: GLUE2ServiceID=<%= @service_id %>,GLUE2GroupID=resource,o=glue
+GLUE2ServiceID: <%= @service_id %>
+objectClass: GLUE2Entity
+objectClass: GLUE2Service
+objectClass: GLUE2ComputingService
+GLUE2EntityName: Computing Service <%= @service_id %>
+GLUE2ServiceCapability: executionmanagement.jobexecution
+GLUE2ServiceType: org.opensciencegrid.htcondorce
+GLUE2ServiceQualityLevel: production
+GLUE2ServiceComplexity: endpointType=<%= @num_endpoints %>, share=<%= @num_shares %>, resource=1
+GLUE2ServiceAdminDomainForeignKey: <%= @site_id %>
